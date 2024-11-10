@@ -1,0 +1,18 @@
+[
+    {
+     "label": "Temperature",
+     "value": 200,
+     "Month": "January"
+    },
+    {
+     "label": "Dust",
+     "value": 100,
+     "Month": "February"
+    },
+    {
+      "label": "Huminity",
+      "value": 72,
+      "Month": "March"
+    }
+
+]
