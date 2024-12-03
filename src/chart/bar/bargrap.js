@@ -3,9 +3,7 @@ import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Toolti
 import React from 'react';
 import { useState, useEffect } from 'react';
 import './bar.css';
-import TempData from './data/Temp.json';
-import HumData from './data/Hum.json';
-import PerData from './data/Per.json';
+
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 

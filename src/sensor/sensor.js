@@ -1,26 +1,51 @@
+import React, { useState, useEffect } from "react";
 import CardDust from './CardDust/Card';
 import CardHumidity from './CardHumidity/Card';
 import CardPressure from './CardPressure/Card';
 import CardTemperature from './CardTemperature/Card';
 import './index.css';
-import React from 'react';
 
 const Sensor = () => {
+  const [temperature, setTemperature] = useState(null);
+  const [humidity, setHumidity] = useState(null);
+  const [dust, setDust] = useState(null);
+  const [airPressure, setAirPressure] = useState(null);
+
+  useEffect(() => {
+    // Gọi API từ PHP
+    fetch("http://localhost/doan2.php") // Đường dẫn tới file PHP
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok " + response.statusText);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        if (data.length > 0) {
+          const latestData = data[data.length - 1]; // Lấy dòng cuối (dữ liệu mới nhất)
+          setTemperature(latestData.Temperature);
+          setHumidity(latestData.Humidity);
+          setDust(latestData.Dust);
+          setAirPressure(latestData.AirPressure);
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+  }, []);
 
   return (
-   <div>
-    <div className='sensor__content'>
-      Sensor
-    </div>
-     <div className='sensor__card'>
-      <div className='sensor__card__colum'>
-       <CardTemperature/>
-       <CardHumidity/>
+    <div>
+      <div className='sensor__content'>
+        Sensor
       </div>
-      <CardDust/>
-       <CardPressure/>
+      <div className='sensor__card'>
+        <div className='sensor__card__colum'>
+          <CardTemperature temperature={temperature} />
+          <CardHumidity humidity={humidity} />
+        </div>
+        <CardDust dust={dust} />
+        <CardPressure airPressure={airPressure} />
+      </div>
     </div>
-   </div>
   );
 };
 
