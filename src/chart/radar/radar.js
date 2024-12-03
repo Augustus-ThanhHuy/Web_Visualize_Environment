@@ -1,27 +1,32 @@
 import { Chart as ChartJS, CategoryScale,Filler, LinearScale, PointElement, LineElement, RadialLinearScale, Title, Tooltip, Legend } from 'chart.js';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './radar.css';
 import { Radar as RadarChart } from 'react-chartjs-2';
-import TempData from '../bar/data/Temp.json';
-import HumData from '../bar/data/Hum.json';
-import PerData from '../bar/data/Per.json';
+
 
 ChartJS.register(CategoryScale, LinearScale,Filler, PointElement, LineElement, RadialLinearScale, Title, Tooltip, Legend);
 
- 
-
 const Radar = () => {
+    const [data, setData] = useState([]);
+
+  useEffect(() => {
+    // Fetch data from your PHP API
+    fetch('http://localhost/doan2.php') // Replace with your actual API URL
+      .then((response) => response.json())
+      .then((data) => setData(data))
+      .catch((error) => console.error('Error fetching data:', error));
+  }, []);
     return (
         <div className='Radar_container'>
             <span>Radar chart</span>
             <div className='Radar_content'>
                 <RadarChart 
                     data={{
-                        labels: TempData.map((data) => data.Month),
+                        labels: data.map((entry) => entry.Month),
                         datasets: [
                             {
                                 label: 'Temperature',
-                                data: TempData.map((data) => data.value),
+                                data: data.map((entry) =>   entry.Temperature),
                                 backgroundColor: 'rgba(255, 99, 132, 0.2)',
                                 borderColor: 'rgba(255, 99, 132, 1)',
                                 borderWidth: 1,
@@ -29,15 +34,15 @@ const Radar = () => {
                             },
                             {
                                 label: 'Humidity',
-                                data: HumData.map((data) => data.value),
+                                data: data.map((entry) => entry.Humidity),
                                 backgroundColor: 'rgba(54, 162, 235, 0.2)',
                                 borderColor: 'rgba(54, 162, 235, 1)',
                                 borderWidth: 1,
                                 fill: true,
                             },
                             {
-                                label: 'Pressure',
-                                data: PerData.map((data) => data.value),
+                                label: 'Dust',
+                                data: data.map((entry) => entry.Dust),
                                 backgroundColor: 'rgba(54, 11, 235, 0.2)',
                                 borderColor: 'rgba(54, 11, 235, 1)',
                                 borderWidth: 1,

@@ -9,31 +9,14 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
 const BarGrap = () => {
 
-  const [tempData, setTempData] = useState([]); // State để lưu dữ liệu nhiệt độ
-    const maxTemperature = 300; // Giá trị tối đa cho nhiệt độ
+  const [data, setData] = useState([]);
 
-    useEffect(() => {
-        // Khởi tạo dữ liệu nhiệt độ với giá trị ban đầu
-        const initialData = TempData.map((item) => ({
-            ...item,
-            value: 0, // Giá trị khởi đầu là 0
-        }));
-
-        setTempData(initialData);
-
-        // Tạo interval để cập nhật giá trị mỗi giây
-        const interval = setInterval(() => {
-            setTempData((prevData) =>
-                prevData.map((item) => ({
-                    ...item,
-                    value: Math.min(item.value + 10, maxTemperature), // Tăng giá trị lên 10 nhưng không vượt quá maxTemperature
-                }))
-            );
-        }, 1000); // Cập nhật mỗi giây
-
-        // Dọn dẹp interval khi component unmount
-        return () => clearInterval(interval);
-    }, []);
+  useEffect(() =>{
+    fetch('http://localhost/doan2.php')
+      .then((response) => response.json())
+      .then((data) => setData(data))
+      .catch((error) => console.error('Error fetching data:', error));
+  }, []);
 
   return (
     <div className='Bar_container'>
@@ -41,11 +24,11 @@ const BarGrap = () => {
       <div className='Bar_content'>
        <Bar
           data={{
-            labels: TempData.map((data) => data.Month),
+            labels: data.map((entry) => entry.ThoiGian),
             datasets: [
               {
                 label: 'Temperature',
-                data: tempData.map((data) => data.value),
+                data: data.map((entry) => entry.Temperature),
                 backgroundColor: 'rgba(255, 99, 132, 0.7)', 
                 borderColor: 'rgba(255, 99, 132, 1)',       
                 borderWidth: 1,                             
@@ -54,7 +37,7 @@ const BarGrap = () => {
               },
               {
                 label: 'Humidity',
-                data: HumData.map((data) => data.value),
+                data: data.map((entry) => entry.Humidity),
                 backgroundColor: 'rgba(54, 162, 235, 0.7)',
                 borderColor: 'rgba(54, 162, 235, 1)',
                 borderWidth: 1,
@@ -62,8 +45,8 @@ const BarGrap = () => {
                 borderRadius: 5,
               },
               {
-                label: 'Persure',
-                data: PerData.map((data) => data.value),
+                label: 'Dust',
+                data: data.map((entry) => entry.Dust),
                 backgroundColor: 'rgba(54, 11, 235, 0.7)',
                 borderColor: 'rgba(54, 11, 235, 1)',
                 borderWidth: 1,
